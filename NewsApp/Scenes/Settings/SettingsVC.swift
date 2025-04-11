@@ -1,19 +1,19 @@
 //
-//  ViewController.swift
+//  SettingsVC.swift
 //  NewsApp
 //
-//  Created by Emirhan İpek on 10.04.2025.
+//  Created by Emirhan İpek on 11.04.2025.
 //
 
 import UIKit
 
-class ViewController: UIViewController {
+class SettingsVC: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
         // Do any additional setup after loading the view.
     }
-
+    
 
 }
-
