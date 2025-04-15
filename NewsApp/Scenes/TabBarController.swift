@@ -22,7 +22,7 @@ private extension TabBarController {
         let homeVC = createNav(
             with: "News",
             and: UIImage(systemName: "newspaper.circle"),
-            viewController: HomeVC()
+            viewController: NewsVC()
         )
         let settingsVC = createNav(
             with: "Settings",

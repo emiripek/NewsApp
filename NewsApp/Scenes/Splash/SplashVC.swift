@@ -12,7 +12,7 @@ final class SplashVC: UIViewController {
     // MARK: - Properties
     private let iconImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(systemName: "newspaper.circle")
+        imageView.image = UIImage(systemName: "newspaper.circle")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal)
         imageView.contentMode = .scaleAspectFit
         return imageView
     }()
@@ -20,11 +20,14 @@ final class SplashVC: UIViewController {
     private let newsLabel: UILabel = {
         let label = UILabel()
         label.text = "News App"
-        label.font = .preferredFont(forTextStyle: .extraLargeTitle)
+        label.font = .systemFont(ofSize: 32, weight: .bold)
         label.textColor = .label
         label.textAlignment = .center
         return label
     }()
+    
+    private let newsService = NewsService()
+    private var fetchedNews: [Article] = []
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
