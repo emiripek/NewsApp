@@ -21,6 +21,8 @@ final class NewsVC: UIViewController {
         let tableView = UITableView()
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.register(NewsCell.self, forCellReuseIdentifier: NewsCell.identifier)
+        tableView.rowHeight = 200
         tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
     }()
@@ -77,9 +79,18 @@ extension NewsVC: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = UITableViewCell()
-        cell.textLabel?.text = viewModel.articles[indexPath.row].title
+        let cell = tableView.dequeueReusableCell(withIdentifier: NewsCell.identifier, for: indexPath) as! NewsCell
+        cell.configure(with: viewModel.articles[indexPath.row])
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let selectedArticle = viewModel.articles[indexPath.row]
+        let detailVM = DetailViewModel(article: selectedArticle)
+        let detailVC = DetailVC(viewModel: detailVM)
+        navigationController?.pushViewController(detailVC, animated: true)
+        
+        tableView.deselectRow(at: indexPath, animated: true)
     }
 }
 

@@ -63,7 +63,7 @@ extension UIView {
         
         if let bottom = bottom {
             let anchor = safeArea ? superview?.safeAreaLayoutGuide.bottomAnchor ?? bottom : bottom
-            let constraint = bottomAnchor.constraint(equalTo: anchor, constant: -paddingBottom)
+            let constraint = bottomAnchor.constraint(equalTo: anchor, constant: paddingBottom)
             constraint.priority = priority
             constraint.isActive = true
         }
@@ -77,7 +77,7 @@ extension UIView {
         
         if let trailing = trailing {
             let anchor = safeArea ? superview?.safeAreaLayoutGuide.trailingAnchor ?? trailing : trailing
-            let constraint = trailingAnchor.constraint(equalTo: anchor, constant: -paddingTrailing)
+            let constraint = trailingAnchor.constraint(equalTo: anchor, constant: paddingTrailing)
             constraint.priority = priority
             constraint.isActive = true
         }
