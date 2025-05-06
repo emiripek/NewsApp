@@ -10,7 +10,7 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
-
+    private let themeKey = "selectedTheme"
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
@@ -20,8 +20,25 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let window = UIWindow(windowScene: windowScene)
         self.window = window
         let splashVC = SplashVC()
+        
+        applySavedTheme()
+        
         window.rootViewController = splashVC
         window.makeKeyAndVisible()
+    }
+    
+    private func applySavedTheme() {
+        let themeMode = UserDefaults.standard.integer(forKey: themeKey)
+        switch themeMode {
+        case 0:
+            window?.overrideUserInterfaceStyle = .unspecified
+        case 1:
+            window?.overrideUserInterfaceStyle = .light
+        case 2:
+            window?.overrideUserInterfaceStyle = .dark
+        default:
+            window?.overrideUserInterfaceStyle = .unspecified
+        }
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
