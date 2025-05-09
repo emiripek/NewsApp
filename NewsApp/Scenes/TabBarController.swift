@@ -44,6 +44,8 @@ private extension TabBarController {
         viewController.title = title
         controller.navigationBar.prefersLargeTitles = true
         viewController.navigationItem.largeTitleDisplayMode = .always
+        controller.tabBarItem.selectedImage = image?.withTintColor(.systemRed, renderingMode: .alwaysOriginal)
+        controller.tabBarItem.setTitleTextAttributes([NSAttributedString.Key.foregroundColor: UIColor.red], for: .normal)
         return controller
     }
 }
