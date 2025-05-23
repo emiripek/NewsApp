@@ -9,6 +9,11 @@ import UIKit
 import StoreKit
 import SafariServices
 
+protocol SettingsVCProtocol: AnyObject {
+    func updateSwitchValue(_ value: Bool)
+    func openAppSettings()
+}
+
 final class SettingsVC: UIViewController {
     
     // MARK: Properties
@@ -25,6 +30,8 @@ final class SettingsVC: UIViewController {
         return tableView
     }()
     
+    private let switcher = UISwitch()
+    
     private let appVersionLabel: UILabel = {
         let label = UILabel()
         label.textColor = .secondaryLabel
@@ -37,6 +44,7 @@ final class SettingsVC: UIViewController {
     init(viewModel: SettingsViewModel = .init()) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
+        viewModel.delegate = self
     }
     
     required init?(coder: NSCoder) {
@@ -164,7 +172,9 @@ extension SettingsVC: UITableViewDataSource {
             
         case .notification:
             let switcher = UISwitch()
-            viewModel.fetchNotificationStatus { switcher.isOn = $0 }
+            viewModel.fetchNotificationStatus{ [weak self] in
+                self?.switcher.isOn = $0
+            }
             switcher.addTarget(self, action: #selector(didToggleNotification(_:)), for: .valueChanged)
             cell.accessoryView = switcher
             
@@ -173,5 +183,22 @@ extension SettingsVC: UITableViewDataSource {
         }
         
         return cell
+    }
+}
+
+extension SettingsVC: SettingsVCProtocol {
+    func openAppSettings() {
+        if let settingsURL = URL(string: UIApplication.openSettingsURLString),
+           UIApplication.shared.canOpenURL(settingsURL) {
+            DispatchQueue.main.async {
+                UIApplication.shared.open(settingsURL)
+            }
+        }
+    }
+    
+    func updateSwitchValue(_ value: Bool) {
+        DispatchQueue.main.async { [weak self] in
+            self?.switcher.isOn = value
+        }
     }
 }

@@ -14,6 +14,10 @@ class SettingsViewModel {
     
     var sections = SettingsSection.sections
     
+    weak var delegate: SettingsVCProtocol?
+    
+    private var notificationManager: NotificationManager = .shared
+    
     private let themeKey = "selectedTheme"
     
     init() {
@@ -28,17 +32,30 @@ extension SettingsViewModel {
         UserDefaults.standard.integer(forKey: themeKey)
     }
     
+    /// When the user requests permission for the first time and wants to open it
     func updateNotificationStatus(isOn: Bool) {
-        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, _ in
-            print("Notification status updated: \(granted)")
-        }
-    }
-    
-    func fetchNotificationStatus(_ completion: @escaping (Bool) -> Void) {
-        UNUserNotificationCenter.current().getNotificationSettings { settings in
-            DispatchQueue.main.async {
-                completion(settings.authorizationStatus == .authorized)
+        
+        Task {
+            if !notificationManager.isRequested && isOn {
+                try await notificationManager.requestNotificationPermissionWithAsync()
+                await notificationManager.updateNotificationStatus()
+                  delegate?.updateSwitchValue(notificationManager.isAuthorized)
+            } else {
+                delegate?.openAppSettings()
             }
         }
     }
+    
+//    func fetchNotificationStatus(_ completion: @escaping (Bool) -> Void) {
+//        UNUserNotificationCenter.current().getNotificationSettings { settings in
+//            DispatchQueue.main.async {
+//                completion(settings.authorizationStatus == .authorized)
+//            }
+//        }
+//    }
+    
+    func fetchNotificationStatus(_ completion: @escaping (Bool) -> Void) {
+        completion(notificationManager.isAuthorized)
+    }
+    
 }
