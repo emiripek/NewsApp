@@ -17,6 +17,14 @@ final class NewsVC: UIViewController {
     
     private let viewModel: NewsViewModel
     
+    private lazy var searchController: UISearchController = {
+        let searchController = UISearchController()
+        searchController.searchBar.placeholder = "Search News"
+        searchController.obscuresBackgroundDuringPresentation = false
+        searchController.searchBar.delegate = self
+        return searchController
+    }()
+    
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
         tableView.delegate = self
@@ -36,6 +44,8 @@ final class NewsVC: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // MARK: - Life Cycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         viewModel.delegate = self
@@ -44,9 +54,12 @@ final class NewsVC: UIViewController {
     }
 }
 
+// MARK: - Private Methods
+
 private extension NewsVC {
     func configureView() {
         view.backgroundColor = .systemBackground
+        navigationItem.searchController = searchController
         addViews()
         configureLayout()
     }
@@ -65,6 +78,8 @@ private extension NewsVC {
     }
 }
 
+// MARK: - NewsViewControllerProtocol
+
 extension NewsVC: NewsViewVCProtocol {
     func reloadData() {
         DispatchQueue.main.async {
@@ -72,6 +87,8 @@ extension NewsVC: NewsViewVCProtocol {
         }
     }
 }
+
+// MARK: - UITableViewDataSource, UITableViewDelegate
 
 extension NewsVC: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -90,7 +107,22 @@ extension NewsVC: UITableViewDelegate, UITableViewDataSource {
         let detailVC = DetailVC(viewModel: detailVM)
         navigationController?.pushViewController(detailVC, animated: true)
         
+        // Deselect the row after selection
         tableView.deselectRow(at: indexPath, animated: true)
+    }
+}
+
+extension NewsVC: UISearchBarDelegate {
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if searchText.isEmpty {
+            viewModel.search(term: "")
+        } else if searchText.count >= 3 {
+            viewModel.search(term: searchText)
+        }
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        viewModel.search(term: "")
     }
 }
 

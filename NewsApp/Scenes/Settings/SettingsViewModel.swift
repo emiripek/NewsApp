@@ -46,14 +46,6 @@ extension SettingsViewModel {
         }
     }
     
-//    func fetchNotificationStatus(_ completion: @escaping (Bool) -> Void) {
-//        UNUserNotificationCenter.current().getNotificationSettings { settings in
-//            DispatchQueue.main.async {
-//                completion(settings.authorizationStatus == .authorized)
-//            }
-//        }
-//    }
-    
     func fetchNotificationStatus(_ completion: @escaping (Bool) -> Void) {
         completion(notificationManager.isAuthorized)
     }
