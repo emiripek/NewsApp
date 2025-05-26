@@ -110,6 +110,13 @@ extension NewsVC: UITableViewDelegate, UITableViewDataSource {
         // Deselect the row after selection
         tableView.deselectRow(at: indexPath, animated: true)
     }
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        // load the next page if we are at the bottom of the screen in the latest news
+        if indexPath.row == viewModel.articles.count - 1 {
+            viewModel.loadMore()
+        }
+    }
 }
 
 extension NewsVC: UISearchBarDelegate {

@@ -21,7 +21,7 @@ class SettingsViewModel {
     private let themeKey = "selectedTheme"
     
     init() {
-        
+        NotificationCenter.default.addObserver(self, selector: #selector(handleReturnFromSettings), name: .didReturnFromSettings, object: nil)
     }
 }
 
@@ -50,4 +50,15 @@ extension SettingsViewModel {
         completion(notificationManager.isAuthorized)
     }
     
+    @objc
+    func handleReturnFromSettings() {
+        Task {
+            await notificationManager.updateNotificationStatus()
+            delegate?.updateSwitchValue(notificationManager.isAuthorized)
+        }
+    }
+}
+
+extension Notification.Name {
+    static let didReturnFromSettings = Notification.Name("didReturnFromSettings")
 }
